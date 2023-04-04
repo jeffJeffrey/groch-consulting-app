@@ -10,8 +10,7 @@ import {
   Badge,
   TextInput,
 } from "@tremor/react";
-import { IoEye, IoTrashBinOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { IoTrashBinOutline } from "react-icons/io5";
 import { User } from "../types";
 import HeaderPageContent from "../components/HeaderPageContent";
 import { useState } from "react";
@@ -20,6 +19,7 @@ import { useQuery, useMutation } from "react-query";
 import ModaleLayout from "../components/ModaleLayout";
 import { isAdmin as userIsAdmin } from "../functions";
 import { useAuth } from "../context";
+import { UserForm } from "@/components/UserForm";
 
 export default function UsersPage() {
   const [searchKey, setsearchKey] = useState("");
@@ -118,66 +118,5 @@ export default function UsersPage() {
         />
       </ModaleLayout>
     </div>
-  );
-}
-
-type TypeFormProps = {
-  user: User | null;
-  onSuccess: () => void;
-};
-function UserForm({ user, onSuccess }: TypeFormProps) {
-  const [username, setUsername] = useState(user?.username || "");
-  const [name, setName] = useState(user?.name || "");
-  const [tel, setTel] = useState(user?.tel || "");
-  const [password, setPassword] = useState("");
-  const spentMutation = useMutation(
-    (data) => {
-      if (!user) return createUser(data);
-      return updateUser(user.id, data);
-    },
-    {
-      onSuccess,
-    }
-  );
-  async function handleSave(e: any) {
-    e.preventDefault();
-    await spentMutation.mutateAsync({ name, tel, username, password } as any);
-  }
-  return (
-    <form className="flex flex-col gap-3" onSubmit={handleSave}>
-      <label>
-        <span className="block">Nom complet:</span>
-        <TextInput
-          value={name}
-          onChange={({ target }) => setName(target.value)}
-          placeholder=""
-        />
-      </label>
-      <label>
-        <span className="block">Nom d'utilisateur:</span>
-        <TextInput
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-          placeholder=""
-        />
-      </label>
-      <label>
-        <span className="block">Telephone:</span>
-        <TextInput
-          value={tel}
-          onChange={({ target }) => setTel(target.value)}
-          placeholder=""
-        />
-      </label>
-      <label>
-        <span className="block">Mot de passe:</span>
-        <TextInput
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-          placeholder=""
-        />
-      </label>
-      <Button>Enrégistrer</Button>
-    </form>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import classNames from "classnames";
 import { useLocalStorage, useOnClickOutside } from "usehooks-ts";
 import { defaultNavItems } from "./NavLinks";
@@ -6,6 +6,8 @@ import { useLocation, Link } from "react-router-dom";
 import { IoLogOutOutline, IoPerson } from "react-icons/io5";
 import { User } from "../types";
 import { useAuth } from "../context";
+import ModaleLayout from "./ModaleLayout";
+import { UserForm } from "./UserForm";
 
 // define a NavItem prop
 export type NavItem = {
@@ -29,7 +31,11 @@ const Sidebar = ({ open, navItems = defaultNavItems, setOpen }: PropsType) => {
 
   const [, setToken] = useLocalStorage<string | null>("token", null);
   const [, setUser] = useLocalStorage<User | null>("user", null);
+  const [isOpen, setIsOpen] = useState(false);
   const { user, isAdmin } = useAuth();
+  function handleEditProfileModal() {
+    setIsOpen(true);
+  }
   return (
     <div
       className={classNames({
@@ -45,7 +51,10 @@ const Sidebar = ({ open, navItems = defaultNavItems, setOpen }: PropsType) => {
     >
       <nav className="md:sticky top-0 md:top-16">
         {/* nav items */}
-        <div className="p-4 flex items-center gap-3">
+        <div
+          className="p-4 flex items-center gap-3 cursor-pointer"
+          onClick={handleEditProfileModal}
+        >
           <IoPerson className="text-center" size={40} />
           <div className="flex flex-col">
             <h2 className="font-bold">{user?.name}</h2>
@@ -98,6 +107,21 @@ const Sidebar = ({ open, navItems = defaultNavItems, setOpen }: PropsType) => {
           </div>
         </div>
       </div>
+      <ModaleLayout
+        closeModal={() => {
+          setIsOpen(false);
+        }}
+        isOpen={isOpen}
+        title={"Modifier mon profile"}
+      >
+        <UserForm
+          user={user}
+          onSuccess={() => {
+            location.reload();
+            setIsOpen(false);
+          }}
+        />
+      </ModaleLayout>
     </div>
   );
 };

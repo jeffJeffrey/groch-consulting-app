@@ -98,8 +98,14 @@ export default function NewConsultationPage() {
       </Card>
       {!!(patient && !!getValidPackage(patient)) && (
         <Card>
-          <Title className="mb-3">Nouvelle consultation</Title>
-
+          <Title className="mb-3">Edition d'une consultation</Title>
+          {consultation?.billed && (
+            <Callout title="Note">
+              Cette consultation a déja été facturé donc ne faites plus les
+              modification qui vont impacter le prix, sinon elle ne sera pas
+              prise en compte.
+            </Callout>
+          )}
           <ConsultationForm patient={patient} data={consultation} />
           {!!consultation && (
             <>

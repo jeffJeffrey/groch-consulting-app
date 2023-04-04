@@ -217,13 +217,16 @@ export function PrescriptionForm(props: PrescriptionFormProps) {
               <Button
                 icon={PlusIcon}
                 type="button"
+                disabled={consultation.billed}
                 onClick={handleAddPrescription}
               >
                 ADD
               </Button>
             </div>
             <div className="mt-3">
-              <Button color="orange">Enrégistrer</Button>
+              <Button disabled={consultation.billed} color="orange">
+                Enrégistrer
+              </Button>
             </div>
           </>
         )}

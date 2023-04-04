@@ -9,7 +9,7 @@ import {
   TableCell,
   Badge,
 } from "@tremor/react";
-import { IoEye, IoTrashBinOutline } from "react-icons/io5";
+import { IoCheckboxOutline, IoEye, IoTrashBinOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { Consultation } from "../types";
 import HeaderPageContent from "../components/HeaderPageContent";
@@ -61,6 +61,7 @@ export default function ConsultationsPage() {
               <TableHeaderCell>Patient</TableHeaderCell>
               <TableHeaderCell>Consulté par</TableHeaderCell>
               <TableHeaderCell>Diagnostic</TableHeaderCell>
+              <TableHeaderCell>Etat</TableHeaderCell>
               <TableHeaderCell>Voir</TableHeaderCell>
               <TableHeaderCell>Supprimer</TableHeaderCell>
             </TableRow>
@@ -72,6 +73,15 @@ export default function ConsultationsPage() {
                 <TableCell>{formatDate(new Date(p.created_at + ""))}</TableCell>
                 <TableCell>{p.patient?.name}</TableCell>
                 <TableCell>{p.user?.name}</TableCell>
+                <TableCell>
+                  {p.billed ? (
+                    <Badge icon={IoCheckboxOutline} color="orange">
+                      Facturé
+                    </Badge>
+                  ) : (
+                    <Badge>Encours...</Badge>
+                  )}
+                </TableCell>
                 <TableCell>
                   <Badge color="orange">{p.diagnostic?.name}</Badge>
                 </TableCell>
