@@ -24,7 +24,12 @@ export function UserForm({ user, onSuccess }: TypeFormProps) {
   );
   async function handleSave(e: any) {
     e.preventDefault();
-    await spentMutation.mutateAsync({ name, tel, username, password } as any);
+    await spentMutation.mutateAsync({
+      name,
+      tel,
+      username,
+      password: password.length > 0 ? password : undefined,
+    } as any);
   }
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSave}>
@@ -43,6 +48,9 @@ export function UserForm({ user, onSuccess }: TypeFormProps) {
           onChange={({ target }) => setUsername(target.value)}
           placeholder=""
         />
+        <small>
+          Le nom d'utilisateur doit etre unique pour chaque utilisateur!
+        </small>
       </label>
       <label>
         <span className="block">Telephone:</span>

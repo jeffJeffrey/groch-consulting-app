@@ -44,7 +44,7 @@ export default function UsersPage() {
     setSelected(user);
     setIsOpen(true);
   }
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   if (isLoading) return <Loader />;
 
   return (
@@ -54,7 +54,7 @@ export default function UsersPage() {
           title="Liste des utilisateurs"
           value={searchKey}
           onChange={setsearchKey}
-          onAdd={() => setIsOpen(true)}
+          onAdd={isAdmin ? () => setIsOpen(true) : undefined}
           buttonLabel="Nouvel utilisateur"
         />
         <Table>
@@ -83,7 +83,11 @@ export default function UsersPage() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <Button onClick={() => handleEditModale(p)} color="pink">
+                    <Button
+                      disabled={!(isAdmin || p.id === user?.id)}
+                      onClick={() => handleEditModale(p)}
+                      color="pink"
+                    >
                       Modif
                     </Button>
                   </TableCell>

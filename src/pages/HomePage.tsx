@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Card,
   Grid,
-  BarChart,
   Metric,
   Text,
   Subtitle,
@@ -27,18 +26,10 @@ import {
   allSpents,
   allSubscriptions,
 } from "../api";
-import { fr } from "date-fns/locale";
 import Loader from "@/components/Loader";
+import { useAuth } from "@/context";
 
 export default function HomePage() {
-  const years = React.useMemo(() => {
-    const yyears = [];
-    for (let i = 2023; i <= new Date().getFullYear(); i++) {
-      yyears.push(i);
-    }
-    return yyears;
-  }, []);
-
   const { data: metricsData, isLoading: metricsLoading } = useQuery<MetricData>(
     "metrics",
     () => allMetrics()
@@ -69,6 +60,14 @@ export default function HomePage() {
   )
     return <Loader />;
 
+  const { isAdmin } = useAuth();
+
+  if (!isAdmin)
+    return (
+      <div>
+        <Metric>BIENVENU</Metric>
+      </div>
+    );
   return (
     <div>
       <Grid numCols={1} numColsMd={5} className="gap-5">

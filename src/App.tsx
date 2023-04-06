@@ -1,7 +1,6 @@
-import { useState } from "react";
 import Layout from "./components/Layout";
 import AuthPage from "./pages/AuthPage";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import { defaultNavItems } from "./components/NavLinks";
 import { useLocalStorage } from "usehooks-ts";
 import { AuthProvider } from "./context";
@@ -11,7 +10,7 @@ function App() {
   if (!token) return <AuthPage />;
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           {defaultNavItems.map((route) => (
             <Route
@@ -21,7 +20,7 @@ function App() {
             />
           ))}
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
   );
 }
