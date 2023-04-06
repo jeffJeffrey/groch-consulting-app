@@ -168,7 +168,7 @@ function ExamForm({ exam, onSuccess }: TypeFormProps) {
           placeholder=""
         />
       </label>
-      <Button>Enrégistrer</Button>
+      <Button loading={spentMutation.isLoading}>Enrégistrer</Button>
     </form>
   );
 }

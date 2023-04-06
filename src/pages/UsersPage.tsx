@@ -20,6 +20,7 @@ import ModaleLayout from "../components/ModaleLayout";
 import { isAdmin as userIsAdmin } from "../functions";
 import { useAuth } from "../context";
 import { UserForm } from "@/components/UserForm";
+import Loader from "@/components/Loader";
 
 export default function UsersPage() {
   const [searchKey, setsearchKey] = useState("");
@@ -44,6 +45,8 @@ export default function UsersPage() {
     setIsOpen(true);
   }
   const { isAdmin } = useAuth();
+  if (isLoading) return <Loader />;
+
   return (
     <div>
       <Card>

@@ -28,6 +28,7 @@ import {
   allSubscriptions,
 } from "../api";
 import { fr } from "date-fns/locale";
+import Loader from "@/components/Loader";
 
 export default function HomePage() {
   const years = React.useMemo(() => {
@@ -38,21 +39,35 @@ export default function HomePage() {
     return yyears;
   }, []);
 
-  const { data: metricsData } = useQuery<MetricData>("metrics", () =>
-    allMetrics()
+  const { data: metricsData, isLoading: metricsLoading } = useQuery<MetricData>(
+    "metrics",
+    () => allMetrics()
   );
 
-  const { data: consultations } = useQuery<Consultation[]>(
-    ["consultations"],
-    allConsultations
-  );
+  const { data: consultations, isLoading: consLoading } = useQuery<
+    Consultation[]
+  >(["consultations"], allConsultations);
 
-  const { data: payments } = useQuery<Payment[]>(["payments"], allPayments);
-  const { data: spents } = useQuery<Spent[]>(["spents"], allSpents);
-  const { data: subscriptions } = useQuery<Subscription[]>(
-    ["subscriptions"],
-    allSubscriptions
+  const { data: payments, isLoading: paymentsLoading } = useQuery<Payment[]>(
+    ["payments"],
+    allPayments
   );
+  const { data: spents, isLoading: spentsLoading } = useQuery<Spent[]>(
+    ["spents"],
+    allSpents
+  );
+  const { data: subscriptions, isLoading: subscriptionsLoading } = useQuery<
+    Subscription[]
+  >(["subscriptions"], allSubscriptions);
+
+  if (
+    metricsLoading ||
+    consLoading ||
+    paymentsLoading ||
+    spentsLoading ||
+    subscriptionsLoading
+  )
+    return <Loader />;
 
   return (
     <div>

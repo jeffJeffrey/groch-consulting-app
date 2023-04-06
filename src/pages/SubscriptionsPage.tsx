@@ -16,13 +16,15 @@ import { allSubscriptions, destroySubscription } from "../api";
 import { useMutation, useQuery } from "react-query";
 import { formatDate, strToDate } from "../functions/dates";
 import { useAuth } from "../context";
+import Loader from "@/components/Loader";
 
 export default function SubscriptionsPage() {
   const [searchKey, setsearchKey] = useState("");
-  const { data: subscriptions, refetch } = useQuery<Subscription[]>(
-    ["subscriptions"],
-    allSubscriptions
-  );
+  const {
+    data: subscriptions,
+    refetch,
+    isLoading,
+  } = useQuery<Subscription[]>(["subscriptions"], allSubscriptions);
 
   const deleteMutation = useMutation((data) => destroySubscription(data), {
     onSuccess: () => refetch(),
@@ -33,6 +35,8 @@ export default function SubscriptionsPage() {
   }
 
   const { isAdmin } = useAuth();
+  if (isLoading) return <Loader />;
+
   return (
     <div>
       <Card>
@@ -58,7 +62,7 @@ export default function SubscriptionsPage() {
               <TableRow key={i}>
                 <TableCell>#{p.id}</TableCell>
                 <TableCell>{p.patient?.name}</TableCell>
-                <TableCell>{formatDate(new Date(p.created_at))}</TableCell>
+                <TableCell>{formatDate(new Date(`${p.created_at}`))}</TableCell>
                 <TableCell>{formatDate(strToDate(p.limitDate))}</TableCell>
                 <TableCell>{p.price}</TableCell>
                 {isAdmin && (

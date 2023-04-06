@@ -29,14 +29,16 @@ import { formatDate } from "../functions/dates";
 import { useNavigate } from "react-router-dom";
 import { getValidPackage } from "../functions";
 import { NewSubscriptionForm } from "../components/NewSubscriptionForm";
+import Loader from "@/components/Loader";
 
 export default function PatientsPage() {
   const navigate = useNavigate();
   const [searchKey, setsearchKey] = useState("");
-  const { data: patients, refetch } = useQuery<Patient[]>(
-    ["patients"],
-    allPatients
-  );
+  const {
+    data: patients,
+    refetch,
+    isLoading,
+  } = useQuery<Patient[]>(["patients"], allPatients);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenNewsubsModal, setIsOpenNewsubsModal] = useState(false);
@@ -58,6 +60,8 @@ export default function PatientsPage() {
     setSelected(p);
     setIsOpenNewsubsModal(true);
   }
+
+  if (isLoading) return <Loader />;
 
   return (
     <div>
@@ -243,7 +247,7 @@ function PatientForm({ patient, onSuccess }: TypePatientFormProps) {
           placeholder=""
         />
       </label>
-      <Button>Enrégistrer</Button>
+      <Button loading={spentMutation.isLoading}>Enrégistrer</Button>
     </form>
   );
 }

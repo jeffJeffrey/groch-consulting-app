@@ -10,7 +10,7 @@ import {
   Badge,
   TextInput,
 } from "@tremor/react";
-import { IoEye, IoTrashBinOutline } from "react-icons/io5";
+import { IoTrashBinOutline } from "react-icons/io5";
 import { Diagnostic, User } from "../types";
 import HeaderPageContent from "../components/HeaderPageContent";
 import { useState } from "react";
@@ -153,7 +153,7 @@ function TypeForm({ type, onSuccess }: TypeFormProps) {
           placeholder=""
         />
       </label>
-      <Button>Enrégistrer</Button>
+      <Button loading={spentMutation.isLoading}>Enrégistrer</Button>
     </form>
   );
 }

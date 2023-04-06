@@ -26,16 +26,18 @@ import {
 } from "../api";
 import ModaleLayout from "../components/ModaleLayout";
 import { useAuth } from "../context";
+import Loader from "@/components/Loader";
 
 export default function ProductsPage() {
   const [searchKey, setsearchKey] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
   const { isAdmin } = useAuth();
-  const { data: patients, refetch } = useQuery<Product[]>(
-    ["patients"],
-    allProducts
-  );
+  const {
+    data: patients,
+    refetch,
+    isLoading,
+  } = useQuery<Product[]>(["patients"], allProducts);
 
   const deleteMutation = useMutation((data) => destroyProduct(data), {
     onSuccess: () => refetch(),
@@ -49,6 +51,8 @@ export default function ProductsPage() {
     setSelected(type);
     setIsOpen(true);
   }
+  if (isLoading) return <Loader />;
+
   return (
     <div>
       <Card>
@@ -245,7 +249,7 @@ function ProductForm({ product, onSuccess }: TypeFormProps) {
           ></textarea>
         </div>
       </label>
-      <Button>Enrégistrer</Button>
+      <Button loading={spentMutation.isLoading}>Enrégistrer</Button>
     </form>
   );
 }

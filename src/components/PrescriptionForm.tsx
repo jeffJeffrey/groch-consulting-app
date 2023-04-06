@@ -10,6 +10,8 @@ import {
   Button,
   Title,
   Flex,
+  MultiSelectBox,
+  MultiSelectBoxItem,
 } from "@tremor/react";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -40,6 +42,7 @@ export function PrescriptionForm(props: PrescriptionFormProps) {
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState<number>();
+  const [loating, setloating] = useState(false);
 
   useEffect(() => {
     if (!!consultation) setPrescriptions(consultation.prescriptions || []);
@@ -73,6 +76,7 @@ export function PrescriptionForm(props: PrescriptionFormProps) {
 
   async function handleSave(e: any) {
     e.preventDefault();
+    setloating(true);
     await Promise.all(
       prescriptions
         .filter((p) => {
@@ -86,7 +90,9 @@ export function PrescriptionForm(props: PrescriptionFormProps) {
             consultation_id: consultation.id,
           });
         })
-    ).then(onSuccess);
+    )
+      .then(onSuccess)
+      .finally(() => setloating(false));
   }
 
   const prescriptionMutation = useMutation<any, any, any>((data) =>
@@ -125,21 +131,43 @@ export function PrescriptionForm(props: PrescriptionFormProps) {
                     {!!products && (
                       <>
                         {!prescription.id ? (
-                          <SelectBox
-                            value={prescription.product_id + ""}
-                            onValueChange={(v) =>
-                              handlePrescriptionChange(index, "product_id", +v)
+                          <MultiSelectBox
+                            value={
+                              prescription.product_id
+                                ? [prescription.product_id + ""]
+                                : undefined
+                            }
+                            onValueChange={(value) =>
+                              handlePrescriptionChange(
+                                index,
+                                "product_id",
+                                +value[0]
+                              )
                             }
                           >
-                            {products?.map((p) => (
-                              <SelectBoxItem
-                                key={p.id}
-                                value={p.id + ""}
-                                text={`${p.name} (${p.type.name})`}
+                            {products?.map((d, i) => (
+                              <MultiSelectBoxItem
+                                key={i}
+                                value={d.id + ""}
+                                text={`${d.name} (${d.type.name})`}
                               />
                             ))}
-                          </SelectBox>
+                          </MultiSelectBox>
                         ) : (
+                          // <SelectBox
+                          //   value={prescription.product_id + ""}
+                          //   onValueChange={(v) =>
+                          //     handlePrescriptionChange(index, "product_id", +v)
+                          //   }
+                          // >
+                          //   {products?.map((p) => (
+                          //     <SelectBoxItem
+                          //       key={p.id}
+                          //       value={p.id + ""}
+                          //       text={`${p.name} (${p.type.name})`}
+                          //     />
+                          //   ))}
+                          // </SelectBox>
                           <TextInput
                             disabled
                             value={`${prescription.product?.name}`}
@@ -224,7 +252,11 @@ export function PrescriptionForm(props: PrescriptionFormProps) {
               </Button>
             </div>
             <div className="mt-3">
-              <Button disabled={consultation.billed} color="orange">
+              <Button
+                loading={loating}
+                disabled={consultation.billed}
+                color="orange"
+              >
                 Enrégistrer
               </Button>
             </div>

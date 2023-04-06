@@ -60,7 +60,7 @@ export function UserForm({ user, onSuccess }: TypeFormProps) {
           placeholder=""
         />
       </label>
-      <Button>Enrégistrer</Button>
+      <Button loading={spentMutation.isLoading}>Enrégistrer</Button>
     </form>
   );
 }

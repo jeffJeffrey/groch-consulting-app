@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { allConsultations, destroyConsultation } from "../api";
 import { formatDate } from "../functions/dates";
+import Loader from "@/components/Loader";
 
 export default function ConsultationsPage() {
   const [searchKey, setsearchKey] = useState("");
@@ -28,9 +29,6 @@ export default function ConsultationsPage() {
     refetch,
   } = useQuery<Consultation[]>(["consultations"], allConsultations);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<Consultation | null>(null);
-
   const deleteMutation = useMutation((data) => destroyConsultation(data), {
     onSuccess: () => refetch(),
   });
@@ -39,10 +37,8 @@ export default function ConsultationsPage() {
       await deleteMutation.mutateAsync(id);
   }
 
-  function handleEditModale(type: Consultation) {
-    setSelected(type);
-    setIsOpen(true);
-  }
+  if (isLoading) return <Loader />;
+
   return (
     <div>
       <Card>
@@ -74,6 +70,11 @@ export default function ConsultationsPage() {
                 <TableCell>{p.patient?.name}</TableCell>
                 <TableCell>{p.user?.name}</TableCell>
                 <TableCell>
+                  <Badge color="orange">
+                    {p.diagnostic?.name || "Non défini"}
+                  </Badge>
+                </TableCell>
+                <TableCell>
                   {p.billed ? (
                     <Badge icon={IoCheckboxOutline} color="orange">
                       Facturé
@@ -81,9 +82,6 @@ export default function ConsultationsPage() {
                   ) : (
                     <Badge>Encours...</Badge>
                   )}
-                </TableCell>
-                <TableCell>
-                  <Badge color="orange">{p.diagnostic?.name}</Badge>
                 </TableCell>
                 <TableCell>
                   <Button

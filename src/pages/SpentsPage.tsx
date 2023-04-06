@@ -19,12 +19,17 @@ import ModaleLayout from "../components/ModaleLayout";
 import { useQuery, useMutation } from "react-query";
 import { allSpents, createSpent, destroySpent, updateSpent } from "../api";
 import { useAuth } from "../context";
+import Loader from "@/components/Loader";
 
 export default function SpentsPage() {
   const [searchKey, setsearchKey] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<Spent | null>(null);
-  const { data: spents, refetch } = useQuery<Spent[]>(["spents"], allSpents);
+  const {
+    data: spents,
+    refetch,
+    isLoading,
+  } = useQuery<Spent[]>(["spents"], allSpents);
 
   function handleEditModale(spent: Spent) {
     setSelected(spent);
@@ -54,6 +59,7 @@ export default function SpentsPage() {
     );
   }, [searchKey, spents]);
   if (!isAdmin) return <></>;
+  if (isLoading) return <Loader />;
   return (
     <div>
       <Card>
@@ -181,7 +187,9 @@ function SpentForm({ onSuccess, spent }: SpentFormPorps) {
           />
         </div>
       </label>
-      <Button type="submit">Enregistrer</Button>
+      <Button loading={spentMutation.isLoading} type="submit">
+        Enregistrer
+      </Button>
     </form>
   );
 }

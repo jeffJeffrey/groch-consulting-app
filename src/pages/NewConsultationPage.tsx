@@ -39,8 +39,8 @@ import { NewSubscriptionForm } from "../components/NewSubscriptionForm";
 import { PatientForm } from "../components/PatientForm";
 import { useAuth } from "../context";
 import { PrescriptionForm } from "../components/PrescriptionForm";
-import { IoLogoEuro } from "react-icons/io5";
 import BillModal from "../components/BillModal";
+import Loader from "@/components/Loader";
 
 export default function NewConsultationPage() {
   const [params] = useSearchParams();
@@ -53,11 +53,11 @@ export default function NewConsultationPage() {
     { enabled: !!patientId }
   );
 
-  const { data: consultation, refetch: refetchCons } = useQuery<
-    any,
-    Error,
-    Consultation
-  >(
+  const {
+    data: consultation,
+    refetch: refetchCons,
+    isLoading,
+  } = useQuery<any, Error, Consultation>(
     ["consultations", consulationId],
     () => retrieveConsultation(consulationId),
     {
@@ -67,28 +67,11 @@ export default function NewConsultationPage() {
 
   const [isOpenNewsubsModal, setIsOpenNewsubsModal] = useState(false);
 
-  const totalPrice = useMemo(() => {
-    let ep = 0;
-    consultation?.exams?.forEach((e) => {
-      ep += e.price;
-    });
-    let prescTotal = 0;
-    if (!!consultation && consultation.prescriptions) {
-      consultation.prescriptions.forEach((pres) => {
-        if (pres.eyeglasses && (pres.eyeglasses?.length || 0) > 2) {
-          prescTotal +=
-            (JSON.parse(pres.eyeglasses) as EyeglassesData).price || 0;
-        } else {
-          prescTotal += (pres.product?.price || 0) * (pres.quantity || 1);
-        }
-      });
-    }
-    return prescTotal + ep;
-  }, [consultation?.prescriptions, consultation?.exams]);
-
   const billedMutation = useMutation((q: any) =>
     setConsultationAsBilled(consultation?.id)
   );
+
+  if (isLoading) return <Loader />;
 
   return (
     <div className="flex flex-col gap-5">

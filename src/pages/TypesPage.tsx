@@ -19,6 +19,7 @@ import { useQuery, useMutation } from "react-query";
 import { allTypes, createType, destroyType, updateType } from "../api";
 import ModaleLayout from "../components/ModaleLayout";
 import { useAuth } from "../context";
+import Loader from "@/components/Loader";
 
 export default function TypesPage() {
   const {
@@ -44,6 +45,8 @@ export default function TypesPage() {
     setSelected(type);
     setIsOpen(true);
   }
+  if (isLoading) return <Loader />;
+
   return (
     <div>
       <Card>
@@ -141,6 +144,7 @@ function TypeForm({ type, onSuccess }: TypeFormProps) {
     e.preventDefault();
     await spentMutation.mutateAsync({ name, description } as any);
   }
+
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSave}>
       <label>
@@ -159,7 +163,7 @@ function TypeForm({ type, onSuccess }: TypeFormProps) {
           placeholder=""
         />
       </label>
-      <Button>Enrégistrer</Button>
+      <Button loading={spentMutation.isLoading}>Enrégistrer</Button>
     </form>
   );
 }
