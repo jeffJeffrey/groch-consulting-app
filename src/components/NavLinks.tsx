@@ -16,6 +16,7 @@ import UsersPage from "../pages/UsersPage";
 import TypesPage from "../pages/TypesPage";
 import ProductsPage from "../pages/ProductsPage";
 import SpentsPage from "../pages/SpentsPage";
+import EntersPage from "../pages/EntersPage";
 import NewConsultationPage from "../pages/NewConsultationPage";
 import SubscriptionsPage from "../pages/SubscriptionsPage";
 import {
@@ -101,6 +102,13 @@ export const defaultNavItems: (NavItem & { element: ReactNode })[] = [
     element: <DiagnosticsPage />,
     icon: <IoSnowOutline />,
     sidebar: true,
+  },
+  {
+    label: "Entres",
+    href: "/enters",
+    element: <EntersPage />,
+    sidebar: true,
+    icon: <HiCurrencyEuro />,
   },
   {
     label: "Dépenses",

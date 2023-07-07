@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+
 import {
   Card,
   Grid,
@@ -15,6 +16,7 @@ import {
   MetricData,
   Payment,
   Spent,
+  Enter,
   Subscription,
   ThemeColor,
 } from "../types";
@@ -24,6 +26,7 @@ import {
   allMetrics,
   allPayments,
   allSpents,
+  allEnters,
   allSubscriptions,
 } from "../api";
 import Loader from "@/components/Loader";
@@ -47,6 +50,10 @@ export default function HomePage() {
     ["spents"],
     allSpents
   );
+  const { data: enters, isLoading: entersLoading } = useQuery<Enter[]>(
+    ["enters"],
+    allEnters
+  );
   const { data: subscriptions, isLoading: subscriptionsLoading } = useQuery<
     Subscription[]
   >(["subscriptions"], allSubscriptions);
@@ -56,6 +63,7 @@ export default function HomePage() {
     consLoading ||
     paymentsLoading ||
     spentsLoading ||
+    entersLoading ||
     subscriptionsLoading
   )
     return <Loader />;
@@ -79,9 +87,10 @@ export default function HomePage() {
           color="blue"
         />
         <MetricCard
-          label="Revenu total des produits vendus"
+          label="Revenu total des entrers"
           value={`${
-            metricsData?.totalProductsBuyedPrice.toFixed(2) || 0.0
+            ((metricsData?.totalProductsBuyedPrice || 0.0) +
+            (metricsData?.totalEntersPrice || 0.0)).toFixed(2)
           } FCFA`}
           color="green"
         />
@@ -100,6 +109,7 @@ export default function HomePage() {
           value={`${
             (metricsData?.totalExamsBuyedPrice || 0) +
               (metricsData?.totalProductsBuyedPrice || 0) +
+              (metricsData?.totalEntersPrice || 0.0) +
               (metricsData?.totalSubscriptionPrice || 0) -
               (metricsData?.totalSpentsPrice || 0) || 0.0
           } FCFA`}
