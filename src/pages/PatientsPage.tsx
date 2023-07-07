@@ -16,7 +16,7 @@ import { IoTrashBinOutline } from "react-icons/io5";
 import { Patient } from "../types";
 import HeaderPageContent from "../components/HeaderPageContent";
 import { useMutation, useQuery } from "react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   allPatients,
   createPatient,
@@ -39,6 +39,14 @@ export default function PatientsPage() {
     refetch,
     isLoading,
   } = useQuery<Patient[]>(["patients"], allPatients);
+
+  const filteredPatients = useMemo(()=>{
+    if(!patients) return patients
+    if(searchKey.length<=0) return patients
+    return patients.filter(p=>{
+      return p.id+"" == searchKey||p.name.toLocaleLowerCase().includes(searchKey.toLocaleLowerCase())||p.tel.includes(searchKey.toLocaleLowerCase())||p.id+""==searchKey
+    })
+  },[patients, searchKey])
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenNewsubsModal, setIsOpenNewsubsModal] = useState(false);
@@ -89,8 +97,8 @@ export default function PatientsPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!!patients &&
-              patients?.map((p, i) => {
+            {!!filteredPatients &&
+              filteredPatients?.map((p, i) => {
                 const validPackage = getValidPackage(p);
                 return (
                   <TableRow key={i}>
